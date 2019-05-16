@@ -57,7 +57,7 @@ func NewFormatter(formatString string, colored bool) Formatter {
 
 	fmtr.appName = filepath.Base(os.Args[0])
 	fmtr.app = []byte(fmtr.appName)
-	fmtr.timeFormat = "2006-01-02T15:04:05.000-0700"
+	fmtr.timeFormat = "2006-01-02T15:04:05.000"
 	fmtr.pid = []byte(strconv.Itoa(os.Getpid()))
 
 	return fmtr
