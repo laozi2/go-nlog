@@ -48,6 +48,13 @@ func main() {
 
 * NewFormatter 第二个参数可以指定是否在对日志级别显示颜色
 
+* NewUdpWriter
+
+  本地IP:本地端口, 远程IP：远程端口
+
+  临时调试也可以用标准输出,  os.Stdout
+
+
 * 日志示例
 
   ```
