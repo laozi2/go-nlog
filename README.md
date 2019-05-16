@@ -1,4 +1,4 @@
-go-log
+go-nlog
 ================
 
 Logging package for UDP log
