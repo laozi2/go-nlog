@@ -15,7 +15,7 @@ type Logger struct {
 	m         sync.Mutex
 	Level     Level
 	Formatter Formatter
-	Out       io.Writer
+	Out       io.WriteCloser
 }
 
 // Debug outputs message, Arguments are handled by fmt.Sprint
@@ -187,4 +187,8 @@ func (l *Logger) log(level Level, msg string) {
 func vsprintln(obj ...interface{}) string {
 	msg := fmt.Sprintln(obj...)
 	return msg[:len(msg)-1]
+}
+
+func (l *Logger) Close() {
+	l.Out.Close()
 }
