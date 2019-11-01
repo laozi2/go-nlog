@@ -19,6 +19,18 @@ const (
 	DEBUG
 )
 
+var (
+	StrLevelMap = map[string]Level{
+		"OFF":   OFF,
+		"FATAL": FATAL,
+		"PANIC": PANIC,
+		"ERROR": ERROR,
+		"WARN":  WARN,
+		"INFO":  INFO,
+		"DEBUG": DEBUG,
+	}
+)
+
 // String converts the Level to a string
 func (level Level) String() string {
 	switch level {

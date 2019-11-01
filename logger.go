@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"strings"
 	"sync"
 )
 
@@ -16,6 +17,43 @@ type Logger struct {
 	Level     Level
 	Formatter Formatter
 	Out       io.WriteCloser
+}
+
+type NlogConf struct {
+	Level  string
+	Format string
+	Stdout bool
+	Laddr  string
+	Raddr  string
+	Color  bool
+}
+
+func NewLog(conf *NlogConf) *Logger {
+	level, ok := StrLevelMap[strings.ToUpper(conf.Level)]
+	if !ok {
+		fmt.Fprintf(os.Stderr, "Error log level %s\n", conf.Level)
+		return nil
+	}
+	if conf.Format == "" {
+		fmt.Fprintln(os.Stderr, "Empty format")
+		return nil
+	}
+	if conf.Stdout {
+		return &Logger{
+			Level:     level,
+			Formatter: NewFormatter(conf.Format, conf.Color),
+			Out:       os.Stdout,
+		}
+	}
+	if conf.Laddr == "" || conf.Raddr == "" {
+		fmt.Fprintln(os.Stderr, "Empty laddr or raddr")
+		return nil
+	}
+	return &Logger{
+		Level:     level,
+		Formatter: NewFormatter(conf.Format, conf.Color),
+		Out:       NewUdpWriter(conf.Laddr, conf.Raddr),
+	}
 }
 
 // Debug outputs message, Arguments are handled by fmt.Sprint
