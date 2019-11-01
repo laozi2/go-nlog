@@ -1,0 +1,8 @@
+
+nlog:
+    level: "DEBUG"
+    format: "$Time $Level $AppName $PID $FilePos $Msg"
+    stdout: false
+    laddr: 0.0.0.0:5201
+    raddr: 192.168.17.213:5151
+    color: true

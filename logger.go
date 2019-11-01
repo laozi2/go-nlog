@@ -20,12 +20,12 @@ type Logger struct {
 }
 
 type NlogConf struct {
-	Level  string
-	Format string
-	Stdout bool
-	Laddr  string
-	Raddr  string
-	Color  bool
+	Level  string `yaml:"level"`
+	Format string `yaml:"format"`
+	Stdout bool   `yaml:"stdout"`
+	Laddr  string `yaml:"laddr"`
+	Raddr  string `yaml:"raddr"`
+	Color  bool   `yaml:"color"`
 }
 
 func NewLog(conf *NlogConf) *Logger {
