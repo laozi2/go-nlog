@@ -19,6 +19,8 @@ type Logger struct {
 	Out       io.WriteCloser
 }
 
+var gLog = Logger{}
+
 type NlogConf struct {
 	Level  string `yaml:"level"`
 	Format string `yaml:"format"`
@@ -28,32 +30,86 @@ type NlogConf struct {
 	Color  bool   `yaml:"color"`
 }
 
-func NewLog(conf *NlogConf) *Logger {
+func InitLog(conf *NlogConf) bool {
 	level, ok := StrLevelMap[strings.ToUpper(conf.Level)]
 	if !ok {
 		fmt.Fprintf(os.Stderr, "Error log level %s\n", conf.Level)
-		return nil
+		return false
 	}
 	if conf.Format == "" {
 		fmt.Fprintln(os.Stderr, "Empty format")
-		return nil
+		return false
 	}
 	if conf.Stdout {
-		return &Logger{
+		gLog = Logger{
 			Level:     level,
 			Formatter: NewFormatter(conf.Format, conf.Color),
 			Out:       os.Stdout,
 		}
+		return true
 	}
 	if conf.Laddr == "" || conf.Raddr == "" {
 		fmt.Fprintln(os.Stderr, "Empty laddr or raddr")
-		return nil
+		return false
 	}
-	return &Logger{
+	gLog = Logger{
 		Level:     level,
 		Formatter: NewFormatter(conf.Format, conf.Color),
 		Out:       NewUdpWriter(conf.Laddr, conf.Raddr),
 	}
+	return true
+}
+
+func Debug(obj ...interface{}) {
+	gLog.Debug(obj...)
+}
+
+func Info(obj ...interface{}) {
+	gLog.Info(obj...)
+}
+
+func Print(obj ...interface{}) {
+	gLog.Print(obj...)
+}
+
+func Warn(obj ...interface{}) {
+	gLog.Warn(obj...)
+}
+
+func Error(obj ...interface{}) {
+	gLog.Error(obj...)
+}
+
+func Panic(obj ...interface{}) {
+	gLog.Panic(obj...)
+}
+
+func Fatal(obj ...interface{}) {
+	gLog.Fatal(obj...)
+}
+
+func Debugf(msg string, args ...interface{}) {
+	gLog.Debugf(msg, args...)
+}
+
+func Infof(msg string, args ...interface{}) {
+	gLog.Infof(msg, args...)
+}
+
+func Warnf(msg string, args ...interface{}) {
+	gLog.Warnf(msg, args...)
+}
+
+func Errorf(msg string, args ...interface{}) {
+	gLog.Errorf(msg, args...)
+}
+
+func Panicf(msg string, args ...interface{}) {
+	gLog.Panicf(msg, args...)
+}
+
+func Fatalf(msg string, args ...interface{}) {
+	gLog.Fatalf(msg, args...)
 }
 
 // Debug outputs message, Arguments are handled by fmt.Sprint
@@ -155,6 +211,10 @@ func (l *Logger) log(level Level, msg string) {
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Failed to write log, %v\n", err)
 	}
+}
+
+func Close() {
+	gLog.Close()
 }
 
 func (l *Logger) Close() {

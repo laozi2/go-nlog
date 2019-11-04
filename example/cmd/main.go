@@ -11,7 +11,6 @@ import (
 
 var (
 	gconf conf.Config
-	nlog  *log.Logger
 )
 
 func init() {
@@ -23,14 +22,14 @@ func init() {
 }
 
 func main() {
-	nlog = log.NewLog(gconf.Nlog)
-	if nlog == nil {
+	ok := log.InitLog(gconf.Nlog)
+	if !ok {
 		os.Exit(1)
 	}
-	defer nlog.Close()
+	defer log.Close()
 
-	nlog.Errorf("error = %s", "some error")
-	nlog.Infof("info = %s", "some info")
+	log.Errorf("error = %s", "some error")
+	log.Infof("info = %s", "some info")
 
 	fmt.Println("main done")
 }
